@@ -12,8 +12,9 @@
     <groupId>com.github.jjYBdx4IL.aop</groupId>
     <artifactId>aspectj-utils</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>AspectJ Utils</name>
+    <description/>
     <url>https://github.com/jjYBdx4IL/aspectj-utils</url>
     <inceptionYear>2017</inceptionYear>
 
@@ -53,58 +54,10 @@
         <tag>HEAD</tag>
     </scm>
     
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencies>
-        <!-- sorted by artifactId -->
-        <dependency>
-            <groupId>io.github.lukehutch</groupId>
-            <artifactId>fast-classpath-scanner</artifactId>
-            <version>2.0.21</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.8.10</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jjYBdx4IL</groupId>
-            <artifactId>github-utils</artifactId>
-            <version>1.2-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-    
+    <modules>
+        <module>aspectj-ltw-configurator</module>
+        <module>aspectj-ltw-configurator-api</module>
+        <module>aspectj-ltw-maven-plugin</module>
+    </modules>
+        
 </project>

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  *
  * and is expected by AspectJ at the classpath location META-INF/aop.xml.
  *
- * The generator uses two annotation to achieve its goal: {@link AspectJWeaveRoot} and {@link Aspect}.
+ * The generator uses two annotations to achieve its goal: {@link AspectJWeaveRoot} and {@link Aspect}.
  * 
  * The first one is a new annotation declared by this package and needs to be put on package info classes'
  * package declaration. It declares to the generator that the package should be used as a package root for

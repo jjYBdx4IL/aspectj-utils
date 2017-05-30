@@ -11,4 +11,5 @@ This generator is intended as an alternative to aspectj-maven-plugin which
 implements compile-time weaving and thus may provide more flexibility in
 certain use cases.
 
-See [class docs](src/main/java/com/github/jjYBdx4IL/aspectj/utils/AOPXMLGenerator.java) for more details.
+See [class docs](aspectj-ltw-configurator/src/main/java/com/github/jjYBdx4IL/aspectj/utils/AOPXMLGenerator.java) for more details.
+
