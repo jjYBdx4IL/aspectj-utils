@@ -38,6 +38,9 @@ public class SimpleTest {
         String xml = FileUtils.readFileToString(generatedAopXml, "UTF-8");
         assertNotNull(xml);
         
+        assertTrue(xml.contains("simple.it.aspects.Aspect1"));
+        assertTrue(xml.contains("simple.it.weaveroot..*"));
+        
         LOG.info(xml);
     }
 }

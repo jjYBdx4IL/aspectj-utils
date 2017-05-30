@@ -19,11 +19,13 @@ import com.github.jjYBdx4IL.aspectj.utils.jaxb.AOPXMLConfig;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.AspectClass;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.Include;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
+import io.github.lukehutch.fastclasspathscanner.MatchProcessorException;
 import io.github.lukehutch.fastclasspathscanner.matchprocessor.ClassAnnotationMatchProcessor;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -53,13 +55,13 @@ import org.slf4j.LoggerFactory;
  * and is expected by AspectJ at the classpath location META-INF/aop.xml.
  *
  * The generator uses two annotations to achieve its goal: {@link AspectJWeaveRoot} and {@link Aspect}.
- * 
- * The first one is a new annotation declared by this package and needs to be put on package info classes'
- * package declaration. It declares to the generator that the package should be used as a package root for
- * weaving, ie. all classes in its package and in sub-packages will be considered for weaving by AspectJ.
- * 
+ *
+ * The first one is a new annotation declared by this package and needs to be put on package info classes' package
+ * declaration. It declares to the generator that the package should be used as a package root for weaving, ie. all
+ * classes in its package and in sub-packages will be considered for weaving by AspectJ.
+ *
  * Aspect configuration entries will be gathered by scanning for the {@link Aspect} annotation.
- * 
+ *
  * This whole classpath scanning business can be limited to local classes directories, ie. to apply your generated
  * configuration only to your current project or module.
  *
@@ -93,6 +95,10 @@ public class AOPXMLGenerator {
     }
 
     protected List<String> allowedClasspathPrefixes = new ArrayList<>();
+    protected String overrideClasspath = null;
+    protected boolean enableVerbose = false;
+    protected ClassLoader classLoader = null;
+    protected List<ClassLoader> overrideClassLoaders = null;
 
     public AOPXMLGenerator() {
     }
@@ -155,9 +161,23 @@ public class AOPXMLGenerator {
         };
 
         FastClasspathScanner scanner = new FastClasspathScanner();
+        scanner.verbose(enableVerbose);
+        if (overrideClasspath != null) {
+            scanner.overrideClasspath(overrideClasspath);
+        }
+        if (classLoader != null) {
+            scanner.addClassLoader(classLoader);
+        }
+        if (overrideClassLoaders != null) {
+            scanner.overrideClassLoaders(overrideClassLoaders.toArray(new ClassLoader[]{}));
+        }
         scanner.matchClassesWithAnnotation(AspectJWeaveRoot.class, weaveRootProcessor);
         scanner.matchClassesWithAnnotation(Aspect.class, aspectProcessor);
-        scanner.scan();
+        try {
+            scanner.scan();
+        } catch (MatchProcessorException ex) {
+            throw new RuntimeException(ex.getExceptions().get(0));
+        }
 
         // create config hierarchy
         AOPXMLConfig config = new AOPXMLConfig();
@@ -179,6 +199,27 @@ public class AOPXMLGenerator {
         return baos.toString();
     }
 
+    /**
+     * Override the classpath to scan.
+     *
+     * @param overrideClasspath Use {@link File#pathSeparatorChar} to delimit the list of classpath entries.
+     */
+    public void setOverrideClasspath(String overrideClasspath) {
+        this.overrideClasspath = overrideClasspath;
+    }
+
+    public void setEnableVerbose(boolean enableVerbose) {
+        this.enableVerbose = enableVerbose;
+    }
+    
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+    
+    public void setOverrideClassLoaders(ClassLoader... overrideClassLoaders) {
+        this.overrideClassLoaders = Arrays.asList(overrideClassLoaders);
+    }
+    
     protected boolean isAllowed(Class<?> classRef) {
         ClassLoader cl = classRef.getClassLoader();
         if (cl == null) {
