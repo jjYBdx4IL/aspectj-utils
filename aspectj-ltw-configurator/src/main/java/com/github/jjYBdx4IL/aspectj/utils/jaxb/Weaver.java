@@ -31,4 +31,17 @@ public class Weaver {
     @XmlAttribute
     public String options = null;
     public List<Include> include = new ArrayList<>();
+
+    public void appendOption(String option) {
+        if (option == null || option.isEmpty()) {
+            throw new IllegalArgumentException("empty or null option string");
+        }
+        if (null == options) {
+            options = "";
+        }
+        if (!options.isEmpty()) {
+            options += " ";
+        }
+        options += option;
+    }
 }

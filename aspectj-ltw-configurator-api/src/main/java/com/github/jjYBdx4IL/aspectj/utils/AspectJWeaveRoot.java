@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * 
  * @author jjYBdx4IL
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PACKAGE)
 public @interface AspectJWeaveRoot {
 }

@@ -17,7 +17,6 @@ package com.github.jjYBdx4IL.aspectj.utils;
 
 import com.github.jjYBdx4IL.aspectj.utils.testaspects.Aspect1;
 import com.github.jjYBdx4IL.aspectj.utils.testroot.SomePotentiallyWeavedClass;
-import java.io.File;
 import org.junit.Test;
 import com.github.jjYBdx4IL.utils.xml.XMLUtils;
 import java.util.Locale;
@@ -38,7 +37,8 @@ public class AOPXMLGeneratorTest {
     @Test
     public void test() throws Exception {
         AOPXMLGenerator generator = new AOPXMLGenerator();
-        generator.addAllowedClassesDir(new File(System.getProperty("basedir"), "target/test-classes").getAbsolutePath());
+//        generator.addAllowedClassesDir(new File(System.getProperty("basedir"), "target/test-classes").getAbsolutePath());
+//        generator.setEnableVerbose(LOG.isDebugEnabled());
         String xml = generator.createXML();
 
         String expectedXml = String.format(Locale.ROOT, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -50,6 +50,7 @@ public class AOPXMLGeneratorTest {
                 + "\n"
                 + "    <weaver options=\"-verbose -showWeaveInfo\">\n"
                 + "        <include within=\"%s..*\"/>\n"
+                + "        <include within=\"javax.servlet.GenericServlet\"/>\n"
                 + "    </weaver>\n"
                 + "\n"
                 + "</aspectj>\n", Aspect1.class.getName(), SomePotentiallyWeavedClass.class.getPackage().getName());

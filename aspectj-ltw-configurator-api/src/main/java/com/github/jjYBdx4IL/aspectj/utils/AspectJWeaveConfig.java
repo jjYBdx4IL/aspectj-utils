@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjYBdx4IL.aspectj.utils.testaspects;
+package com.github.jjYBdx4IL.aspectj.utils;
 
-import com.github.jjYBdx4IL.aspectj.utils.AspectJWeaveConfig;
-import org.aspectj.lang.annotation.Aspect;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author jjYBdx4IL
  */
-@Aspect
-@AspectJWeaveConfig(
-        includesWithin = {"javax.servlet.GenericServlet"},
-        verbose = true,
-        showWeaveInfo = true
-)
-public class Aspect1 {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface AspectJWeaveConfig {
 
+    /**
+     * Denote types to be weaved, ie. "a.b.c..*" for entire a.b.c package hierarchy.
+     *
+     * @return
+     */
+    String[] includesWithin() default {};
+
+    boolean verbose() default false;
+    boolean showWeaveInfo() default false;
 }

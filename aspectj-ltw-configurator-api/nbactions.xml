@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
-            <actionName>test.single</actionName>
-            <packagings>
-                <packaging>*</packaging>
-            </packagings>
+            <actionName>CUSTOM-license:format</actionName>
+            <displayName>license:format</displayName>
             <goals>
-                <goal>test-compile</goal>
-                <goal>surefire:test</goal>
+                <goal>license:format</goal>
             </goals>
-            <properties>
-                <test>${packageClassName}</test>
-                <org.slf4j.simpleLogger.defaultLogLevel>debug</org.slf4j.simpleLogger.defaultLogLevel>
-            </properties>
         </action>
         <action>
             <actionName>build</actionName>

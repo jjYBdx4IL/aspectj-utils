@@ -99,6 +99,7 @@ public class AOPXMLGenerator {
     protected boolean enableVerbose = false;
     protected ClassLoader classLoader = null;
     protected List<ClassLoader> overrideClassLoaders = null;
+    protected final AOPXMLConfig config = new AOPXMLConfig();
 
     public AOPXMLGenerator() {
     }
@@ -106,7 +107,8 @@ public class AOPXMLGenerator {
     /**
      *
      * @param classpathPrefix ie. ${project.build.directory}/classes if you only want to scan your current maven module
-     * for {@link AspectJWeaveRoot} and {@link Aspect} annotations.
+     * for {@link AspectJWeaveRoot} and {@link Aspect} annotations. Not needed if you use {@link AspectJWeaveConfig}
+     * annotation because classpath entries containing it will be auto-selected for scanning.
      */
     public void addAllowedClassesDir(String classpathPrefix) {
         String moduleUriPrefix = new File(classpathPrefix).toURI().toString();
@@ -136,27 +138,90 @@ public class AOPXMLGenerator {
         FileUtils.write(outputFile, xml, "UTF-8");
     }
 
-    public String createXML() throws JAXBException {
+    protected void processAspectJWeaveRootAnnotatedClass(Class<?> classRef) {
+        if (!isAllowed(classRef)) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("skipping @AspectJWeaveRoot annotated class " + classRef.getName()
+                        + " because of disallowed classpath location");
+            }
+            return;
+        }
 
-        final List<String> foundWeaveRootPackageNames = new ArrayList<>();
+        String includeWithin = classRef.getName().replaceAll("\\.package-info$", "..*");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("adding weave include within: " + includeWithin
+                    + " because package " + classRef.getName() + " is annotated with @AspectJWeaveRoot");
+        }
+        config.weaver.include.add(new Include(includeWithin));
+    }
+
+    protected void processAspectJWeaveConfigAnnotatedClass(Class<?> classRef) {
+        String moduleUriPrefix = getClasspathPrefix(classRef);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("adding " + moduleUriPrefix + " to list of scanned class roots because @AspectJWeaveConfig"
+                    + " was found in " + classRef.getName());
+        }
+        allowedClasspathPrefixes.add(moduleUriPrefix);
+
+        AspectJWeaveConfig configAnno = classRef.getAnnotation(AspectJWeaveConfig.class);
+        for (String includeWithin : configAnno.includesWithin()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("adding weave include within: " + includeWithin + " because of @AspectJWeaveConfig"
+                        + " parameter found in " + classRef.getName());
+            }
+            config.weaver.include.add(new Include(includeWithin));
+        }
+        if (configAnno.verbose()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("adding weave option: -verbose because of @AspectJWeaveConfig"
+                        + " parameter found in " + classRef.getName());
+            }
+            config.weaver.appendOption("-verbose");
+        }
+        if (configAnno.showWeaveInfo()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("adding weave option: -showWeaveInfo because of @AspectJWeaveConfig"
+                        + " parameter found in " + classRef.getName());
+            }
+            config.weaver.appendOption("-showWeaveInfo");
+        }
+    }
+
+    protected void processAspectAnnotatedClass(Class<?> classRef) {
+        if (!isAllowed(classRef)) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("skipping @Aspect annotated class " + classRef.getName()
+                        + " because of disallowed classpath location");
+            }
+            return;
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("adding aspect class " + classRef.getName() + " because it is annotated with @Aspect");
+        }
+        config.aspects.aspect.add(new AspectClass(classRef.getName()));
+    }
+
+    public String createXML() throws JAXBException {
 
         ClassAnnotationMatchProcessor weaveRootProcessor = new ClassAnnotationMatchProcessor() {
             @Override
             public void processMatch(Class<?> classRef) {
-                if (isAllowed(classRef)) {
-                    foundWeaveRootPackageNames.add(classRef.getName().replaceAll("\\.package-info$", ""));
-                }
+                processAspectJWeaveRootAnnotatedClass(classRef);
             }
         };
 
-        final List<String> foundAspectAnnotatedClassNames = new ArrayList<>();
+        ClassAnnotationMatchProcessor weaveConfigProcessor = new ClassAnnotationMatchProcessor() {
+            @Override
+            public void processMatch(Class<?> classRef) {
+                processAspectJWeaveConfigAnnotatedClass(classRef);
+            }
+        };
 
         ClassAnnotationMatchProcessor aspectProcessor = new ClassAnnotationMatchProcessor() {
             @Override
             public void processMatch(Class<?> classRef) {
-                if (isAllowed(classRef)) {
-                    foundAspectAnnotatedClassNames.add(classRef.getName());
-                }
+                processAspectAnnotatedClass(classRef);
             }
         };
 
@@ -172,21 +237,12 @@ public class AOPXMLGenerator {
             scanner.overrideClassLoaders(overrideClassLoaders.toArray(new ClassLoader[]{}));
         }
         scanner.matchClassesWithAnnotation(AspectJWeaveRoot.class, weaveRootProcessor);
+        scanner.matchClassesWithAnnotation(AspectJWeaveConfig.class, weaveConfigProcessor);
         scanner.matchClassesWithAnnotation(Aspect.class, aspectProcessor);
         try {
             scanner.scan();
         } catch (MatchProcessorException ex) {
             throw new RuntimeException(ex.getExceptions().get(0));
-        }
-
-        // create config hierarchy
-        AOPXMLConfig config = new AOPXMLConfig();
-        for (String aspectClassName : foundAspectAnnotatedClassNames) {
-            config.aspects.aspect.add(new AspectClass(aspectClassName));
-        }
-        config.weaver.options = "-verbose -showWeaveInfo";
-        for (String packageName : foundWeaveRootPackageNames) {
-            config.weaver.include.add(new Include(packageName + "..*"));
         }
 
         // serialize config to XML
@@ -211,22 +267,17 @@ public class AOPXMLGenerator {
     public void setEnableVerbose(boolean enableVerbose) {
         this.enableVerbose = enableVerbose;
     }
-    
+
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
-    
+
     public void setOverrideClassLoaders(ClassLoader... overrideClassLoaders) {
         this.overrideClassLoaders = Arrays.asList(overrideClassLoaders);
     }
-    
+
     protected boolean isAllowed(Class<?> classRef) {
-        ClassLoader cl = classRef.getClassLoader();
-        if (cl == null) {
-            cl = ClassLoader.getSystemClassLoader();
-        }
-        String classResourceFileName = classRef.getName().replace('.', '/') + ".class";
-        String fullResourcePath = cl.getResource(classResourceFileName).toString();
+        String fullResourcePath = getFullResourcePath(classRef);
         boolean allowed = allowedClasspathPrefixes.isEmpty();
         for (String moduleUriPrefix : allowedClasspathPrefixes) {
             if (fullResourcePath.startsWith(moduleUriPrefix)) {
@@ -234,5 +285,19 @@ public class AOPXMLGenerator {
             }
         }
         return allowed;
+    }
+
+    protected String getClasspathPrefix(Class<?> classRef) {
+        String fullResourcePath = getFullResourcePath(classRef);
+        return fullResourcePath.substring(0, fullResourcePath.length() - classRef.getName().length() - 6);
+    }
+
+    protected String getFullResourcePath(Class<?> classRef) {
+        ClassLoader cl = classRef.getClassLoader();
+        if (cl == null) {
+            cl = ClassLoader.getSystemClassLoader();
+        }
+        String classResourceFileName = classRef.getName().replace('.', '/') + ".class";
+        return cl.getResource(classResourceFileName).toString();
     }
 }

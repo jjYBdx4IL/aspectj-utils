@@ -1,8 +1,8 @@
 # aspectj-utils
 
-Contains an AOPXMLGenerator for AspectJ load-time weaving.
+Contains a META-INF/aop.xml generator (AOPXMLGenerator) for AspectJ load-time weaving (LTW).
 
-The generator is controlled through a new annotation indicating the root
+The generator is controlled through annotations indicating the root
 of the classes to be weaved, and aspects will be added by scanning
 the classpath for @Aspect annotations. This scanning process can be limited
 to specific classes directories.
