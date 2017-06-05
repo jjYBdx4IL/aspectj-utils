@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjybdx4il.aop.aspectj.examples;
+package com.github.jjYBdx4IL.aop.aspectj.examples;
 
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
- * @author jjYBdx4IL
+ * @author jjybdx4il
  */
-public class AspectJTest {
-
-    @Test
-    public void testSuperMethodCall() {
-        SubClass sc = new SubClass();
-        assertEquals(0, sc.testSuperMethodCall);
-        assertEquals(0, sc.testSuperMethodCallViaSubClassAnnotation);
-        sc.parentMethod();
-        assertEquals(1, sc.testSuperMethodCall);
-        assertEquals(1, sc.testSuperMethodCallViaSubClassAnnotation);
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface TypeAnno {
     
 }

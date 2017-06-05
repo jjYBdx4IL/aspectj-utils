@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjybdx4il.aop.aspectj.examples;
+package com.github.jjYBdx4IL.aop.aspectj.examples;
 
 import com.github.jjYBdx4IL.aspectj.utils.AspectJWeaveConfig;
 import org.aspectj.lang.annotation.After;
@@ -27,7 +27,9 @@ import org.aspectj.lang.annotation.Aspect;
 @AspectJWeaveConfig(
         showWeaveInfo = true,
         verbose = true,
-        includesWithin = {"com.github.jjybdx4il.aop.aspectj.examples..*"}
+        // Beware! don't forget to allow weaving of superclasses if the weaved method is not directly declared in your
+        // own class definition!
+        includesWithin = {"com.github.jjYBdx4IL.aop.aspectj.examples..*"}
 )
 public class AspectDefinitions {
 

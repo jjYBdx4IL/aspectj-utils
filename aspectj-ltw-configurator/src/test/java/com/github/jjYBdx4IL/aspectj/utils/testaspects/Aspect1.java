@@ -27,7 +27,10 @@ import org.aspectj.lang.annotation.Aspect;
         includesWithin = {"javax.servlet.GenericServlet"},
         verbose = true,
         showWeaveInfo = true,
-        weaveJavaxPackages = true
+        weaveJavaxPackages = true,
+        debug = true,
+        noInline = true,
+        reweavable = true
 )
 public class Aspect1 {
 

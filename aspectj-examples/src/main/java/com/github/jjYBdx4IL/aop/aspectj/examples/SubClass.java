@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjybdx4il.aop.aspectj.examples;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.github.jjYBdx4IL.aop.aspectj.examples;
 
 /**
  *
- * @author jjybdx4il
+ * @author jjYBdx4IL
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface TypeAnno {
-    
+@TypeAnno
+public class SubClass extends Parent {
+
 }

@@ -38,4 +38,7 @@ public @interface AspectJWeaveConfig {
     boolean verbose() default false;
     boolean showWeaveInfo() default false;
     boolean weaveJavaxPackages() default false;
+    boolean noInline() default false;
+    boolean reweavable() default false;
+    boolean debug() default false;
 }

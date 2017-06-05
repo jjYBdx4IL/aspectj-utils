@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjybdx4il.aop.aspectj.examples;
+package com.github.jjYBdx4IL.aop.aspectj.examples;
+
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
  * @author jjYBdx4IL
  */
-public class Parent {
+public class AspectJTest {
 
-    public int testSuperMethodCall = 0;
-    public int testSuperMethodCallViaSubClassAnnotation = 0;
-    
-    public String parentMethod() {
-        return "parent";
+    @Test
+    public void testSuperMethodCall() {
+        SubClass sc = new SubClass();
+        assertEquals(0, sc.testSuperMethodCall);
+        assertEquals(0, sc.testSuperMethodCallViaSubClassAnnotation);
+        sc.parentMethod();
+        assertEquals(1, sc.testSuperMethodCall);
+        assertEquals(1, sc.testSuperMethodCallViaSubClassAnnotation);
     }
+    
 }

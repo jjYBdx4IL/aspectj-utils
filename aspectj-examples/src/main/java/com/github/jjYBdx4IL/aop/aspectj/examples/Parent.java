@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjybdx4il.aop.aspectj.examples;
+package com.github.jjYBdx4IL.aop.aspectj.examples;
 
 /**
  *
  * @author jjYBdx4IL
  */
-@TypeAnno
-public class SubClass extends Parent {
+public class Parent {
 
+    public int testSuperMethodCall = 0;
+    public int testSuperMethodCallViaSubClassAnnotation = 0;
+    
+    public String parentMethod() {
+        return "parent";
+    }
 }
