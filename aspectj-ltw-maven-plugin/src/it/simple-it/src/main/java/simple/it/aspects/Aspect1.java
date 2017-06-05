@@ -15,6 +15,7 @@
  */
 package simple.it.aspects;
 
+import com.github.jjYBdx4IL.aspectj.utils.AspectJWeaveConfig;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
@@ -22,6 +23,11 @@ import org.aspectj.lang.annotation.Aspect;
  * @author jjYBdx4IL
  */
 @Aspect
+@AspectJWeaveConfig(
+        includesWithin = {"javax.servlet.GenericServlet"},
+        verbose = true,
+        showWeaveInfo = true
+)
 public class Aspect1 {
 
 }

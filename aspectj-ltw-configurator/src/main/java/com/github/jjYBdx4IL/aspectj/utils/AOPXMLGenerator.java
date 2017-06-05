@@ -164,6 +164,10 @@ public class AOPXMLGenerator {
         allowedClasspathPrefixes.add(moduleUriPrefix);
 
         AspectJWeaveConfig configAnno = classRef.getAnnotation(AspectJWeaveConfig.class);
+        if (configAnno == null) {
+            throw new RuntimeException("error while processing @AspectJWeaveConfig annotation in class "
+                    + classRef.getName() + ": failed to read annotation");
+        }
         for (String includeWithin : configAnno.includesWithin()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("adding weave include within: " + includeWithin + " because of @AspectJWeaveConfig"

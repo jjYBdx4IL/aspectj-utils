@@ -72,7 +72,7 @@ public class GenerateLTWConfigMojo
             getLog().debug("adding to scan classpath: " + url.toExternalForm());
             urls[i] = url;
         }
-        return new URLClassLoader(urls);
+        return new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
     }
 
 }
