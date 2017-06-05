@@ -189,6 +189,13 @@ public class AOPXMLGenerator {
             }
             config.weaver.appendOption("-showWeaveInfo");
         }
+        if (configAnno.weaveJavaxPackages()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("adding weave option: -Xset:weaveJavaxPackages=true because of @AspectJWeaveConfig"
+                        + " parameter found in " + classRef.getName());
+            }
+            config.weaver.appendOption("-Xset:weaveJavaxPackages=true");
+        }
     }
 
     protected void processAspectAnnotatedClass(Class<?> classRef) {

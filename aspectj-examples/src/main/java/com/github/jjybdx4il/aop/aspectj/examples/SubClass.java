@@ -13,29 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjYBdx4IL.aspectj.utils;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.github.jjybdx4il.aop.aspectj.examples;
 
 /**
  *
  * @author jjYBdx4IL
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface AspectJWeaveConfig {
+@TypeAnno
+public class SubClass extends Parent {
 
-    /**
-     * Denote types to be weaved, ie. "a.b.c..*" for entire a.b.c package hierarchy.
-     *
-     * @return
-     */
-    String[] includesWithin() default {};
-
-    boolean verbose() default false;
-    boolean showWeaveInfo() default false;
-    boolean weaveJavaxPackages() default false;
 }

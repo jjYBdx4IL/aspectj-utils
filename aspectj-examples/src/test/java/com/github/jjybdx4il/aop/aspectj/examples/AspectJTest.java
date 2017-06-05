@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjYBdx4IL.aspectj.utils;
+package com.github.jjybdx4il.aop.aspectj.examples;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
  * @author jjYBdx4IL
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface AspectJWeaveConfig {
+public class AspectJTest {
 
-    /**
-     * Denote types to be weaved, ie. "a.b.c..*" for entire a.b.c package hierarchy.
-     *
-     * @return
-     */
-    String[] includesWithin() default {};
-
-    boolean verbose() default false;
-    boolean showWeaveInfo() default false;
-    boolean weaveJavaxPackages() default false;
+    @Test
+    public void testSuperMethodCall() {
+        SubClass sc = new SubClass();
+        assertEquals(0, sc.testSuperMethodCall);
+        assertEquals(0, sc.testSuperMethodCallViaSubClassAnnotation);
+        sc.parentMethod();
+        assertEquals(1, sc.testSuperMethodCall);
+        assertEquals(1, sc.testSuperMethodCallViaSubClassAnnotation);
+    }
+    
 }

@@ -48,7 +48,7 @@ public class AOPXMLGeneratorTest {
                 + "        <aspect name=\"%s\"/>\n"
                 + "    </aspects>\n"
                 + "\n"
-                + "    <weaver options=\"-verbose -showWeaveInfo\">\n"
+                + "    <weaver options=\"-verbose -showWeaveInfo -Xset:weaveJavaxPackages=true\">\n"
                 + "        <include within=\"%s..*\"/>\n"
                 + "        <include within=\"javax.servlet.GenericServlet\"/>\n"
                 + "    </weaver>\n"

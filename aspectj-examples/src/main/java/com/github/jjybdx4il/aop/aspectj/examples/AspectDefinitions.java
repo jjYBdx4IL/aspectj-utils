@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjYBdx4IL.aspectj.utils.testaspects;
+package com.github.jjybdx4il.aop.aspectj.examples;
 
 import com.github.jjYBdx4IL.aspectj.utils.AspectJWeaveConfig;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
@@ -24,11 +25,19 @@ import org.aspectj.lang.annotation.Aspect;
  */
 @Aspect
 @AspectJWeaveConfig(
-        includesWithin = {"javax.servlet.GenericServlet"},
-        verbose = true,
         showWeaveInfo = true,
-        weaveJavaxPackages = true
+        verbose = true,
+        includesWithin = {"com.github.jjybdx4il.aop.aspectj.examples..*"}
 )
-public class Aspect1 {
+public class AspectDefinitions {
 
+    @After("execution(* Parent+.parentMethod(..)) && this(foo)")
+    public void testSuperMethodCall(Parent foo) {
+        foo.testSuperMethodCall++;
+    }
+    
+    @After("@this(TypeAnno) && execution(* Parent+.parentMethod(..)) && this(foo)")
+    public void testSuperMethodCallViaSubClassAnnotation(Parent foo) {
+        foo.testSuperMethodCallViaSubClassAnnotation++;
+    }
 }
