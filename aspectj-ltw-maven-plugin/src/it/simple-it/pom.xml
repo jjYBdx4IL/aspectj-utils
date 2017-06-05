@@ -25,6 +25,12 @@
             <artifactId>aspectjrt</artifactId>
             <version>1.8.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.10</version>
+            <scope>runtime</scope>
+        </dependency>
         
         <dependency>
             <groupId>junit</groupId>
@@ -56,6 +62,7 @@
                     <execution>
                         <goals>
                             <goal>generate-ltw-config</goal>
+                            <goal>generate-maven-startup-config</goal>
                         </goals>
                     </execution>
                 </executions>

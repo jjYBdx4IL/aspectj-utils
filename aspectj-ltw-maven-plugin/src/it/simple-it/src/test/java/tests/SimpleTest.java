@@ -30,7 +30,7 @@ public class SimpleTest {
     private static final Logger LOG = LoggerFactory.getLogger(SimpleTest.class);
     
     @Test
-    public void test() throws IOException {
+    public void testGenerateLTWConfig() throws IOException {
         File generatedAopXml = new File(System.getProperty("basedir"), "target/classes/META-INF/aop.xml");
         
         assertTrue(generatedAopXml.exists());
@@ -42,5 +42,20 @@ public class SimpleTest {
         assertTrue(xml.contains("simple.it.weaveroot..*"));
         
         LOG.info(xml);
+    }
+    
+    @Test
+    public void testGenerateMavenStartupConfig() throws IOException {
+        File generatedJvmConfig = new File(System.getProperty("basedir"), ".mvn/jvm.config");
+        
+        assertTrue(generatedJvmConfig.exists());
+        assertTrue(generatedJvmConfig.isFile());
+        String contents = FileUtils.readFileToString(generatedJvmConfig, "ASCII");
+        assertNotNull(contents);
+        
+        assertTrue(contents.contains("-javaagent:"));
+        assertTrue(contents.contains("aspectjweaver"));
+        
+        LOG.info(contents);
     }
 }
