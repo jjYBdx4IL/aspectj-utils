@@ -3,3 +3,5 @@
 /aspectj-ltw-configurator-maven-plugin/target/
 /aspectj-ltw-maven-plugin/target/
 /aspectj-examples/target/
+/aspectj-tx-manager-api/target/
+/aspectj-tx-manager/target/

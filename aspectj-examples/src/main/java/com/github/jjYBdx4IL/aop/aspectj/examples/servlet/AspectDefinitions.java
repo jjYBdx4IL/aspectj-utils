@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jjYBdx4IL.aop.aspectj.examples;
+package com.github.jjYBdx4IL.aop.aspectj.examples.servlet;
 
 import com.github.jjYBdx4IL.aspectj.utils.AspectJWeaveConfig;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,18 +31,17 @@ import org.aspectj.lang.annotation.Aspect;
         verbose = true,
         // Beware! don't forget to allow weaving of superclasses if the weaved method is not directly declared in your
         // own class definition!
-        includesWithin = {"com.github.jjYBdx4IL.aop.aspectj.examples..*"},
-        debug = true
+        includesWithin = {"javax.servlet.GenericServlet"},
+        weaveJavaxPackages = true
 )
 public class AspectDefinitions {
 
-    @After("execution(* ParentsParent+.parentMethod(..)) && this(foo)")
-    public void testSuperMethodCall(Parent foo) {
-        foo.testSuperMethodCall++;
+    private static final Logger LOG = LoggerFactory.getLogger(AspectDefinitions.class);
+    
+    @After("@this(com.github.jjYBdx4IL.aop.aspectj.examples.servlet.ServletAnno) && execution(* javax.servlet.GenericServlet.init()) && this(foo)")
+    public void testSuperMethodCall(Object foo) {
+        LOG.info(">>> POINTCUT: @this(ServletAnno) && exec(* GenericServlet.init()) " + foo);
+        ((TestCounter)foo).inc();
     }
     
-    @After("@this(TypeAnno) && execution(* ParentsParent+.parentMethod(..)) && this(foo)")
-    public void testSuperMethodCallViaSubClassAnnotation(Parent foo) {
-        foo.testSuperMethodCallViaSubClassAnnotation++;
-    }
 }

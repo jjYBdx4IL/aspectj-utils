@@ -59,6 +59,8 @@
         <module>aspectj-ltw-configurator-api</module>
         <module>aspectj-ltw-maven-plugin</module>
         <module>aspectj-examples</module>
+        <module>aspectj-tx-manager</module>
+        <module>aspectj-tx-manager-api</module>
     </modules>
         
 </project>
