@@ -25,4 +25,5 @@ unless you do some deeply discouraged stuff.
 Don't try to weave external libraries unless it is for debugging purposes are you are absolutely sure
 how the classloading works for them. In my describe case you could simply @Override the GenericServlet's
 init() and destroy() methods in your own class and weave those. That's a little bit of overhead, but
-it's definitely safer.
+it's definitely safer. Or you put your entire transaction handling into an independent module that you
+can load with the Jetty instance.
