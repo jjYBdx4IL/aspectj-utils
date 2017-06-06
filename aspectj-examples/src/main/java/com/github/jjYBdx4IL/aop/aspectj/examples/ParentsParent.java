@@ -19,11 +19,6 @@ package com.github.jjYBdx4IL.aop.aspectj.examples;
  *
  * @author jjYBdx4IL
  */
-public class Parent extends ParentsParent {
+public class ParentsParent {
 
-    public int testSuperMethodCall = 0;
-    public int testSuperMethodCallViaSubClassAnnotation = 0;
-    
-    public void parentMethod() {
-    }
 }

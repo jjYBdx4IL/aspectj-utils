@@ -33,12 +33,12 @@ import org.aspectj.lang.annotation.Aspect;
 )
 public class AspectDefinitions {
 
-    @After("execution(* Parent+.parentMethod(..)) && this(foo)")
+    @After("execution(* ParentsParent+.parentMethod(..)) && this(foo)")
     public void testSuperMethodCall(Parent foo) {
         foo.testSuperMethodCall++;
     }
     
-    @After("@this(TypeAnno) && execution(* Parent+.parentMethod(..)) && this(foo)")
+    @After("@this(TypeAnno) && execution(* ParentsParent+.parentMethod(..)) && this(foo)")
     public void testSuperMethodCallViaSubClassAnnotation(Parent foo) {
         foo.testSuperMethodCallViaSubClassAnnotation++;
     }
