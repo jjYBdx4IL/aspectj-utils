@@ -17,6 +17,7 @@ package com.github.jjYBdx4IL.aspectj.utils;
 
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.AOPXMLConfig;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.AspectClass;
+import com.github.jjYBdx4IL.aspectj.utils.jaxb.Dump;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.Include;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.MatchProcessorException;
@@ -174,6 +175,13 @@ public class AOPXMLGenerator {
                         + " parameter found in " + classRef.getName());
             }
             config.weaver.include.add(new Include(includeWithin));
+        }
+        for (String dumpWithin : configAnno.dumpWithin()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("adding weave dump within: " + dumpWithin + " because of @AspectJWeaveConfig"
+                        + " parameter found in " + classRef.getName());
+            }
+            config.weaver.dump.add(new Dump(dumpWithin));
         }
         if (configAnno.verbose()) {
             if (LOG.isDebugEnabled()) {

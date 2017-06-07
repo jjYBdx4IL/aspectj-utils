@@ -34,6 +34,7 @@ public @interface AspectJWeaveConfig {
      * @return
      */
     String[] includesWithin() default {};
+    String[] dumpWithin() default {};
 
     boolean verbose() default false;
     boolean showWeaveInfo() default false;

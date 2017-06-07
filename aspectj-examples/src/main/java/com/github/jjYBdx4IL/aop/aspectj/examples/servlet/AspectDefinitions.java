@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
         // Beware! don't forget to allow weaving of superclasses if the weaved method is not directly declared in your
         // own class definition!
         includesWithin = {"javax.servlet.GenericServlet"},
-        weaveJavaxPackages = true
+        weaveJavaxPackages = true,
+        debug = true
 )
 public class AspectDefinitions {
 

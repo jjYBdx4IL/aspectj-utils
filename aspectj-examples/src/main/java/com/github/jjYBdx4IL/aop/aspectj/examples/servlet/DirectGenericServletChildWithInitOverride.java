@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
  */
 @SuppressWarnings("serial")
 @ServletAnno
-public class DirectGenericServletChild extends GenericServlet implements TestCounter {
+public class DirectGenericServletChildWithInitOverride extends GenericServlet implements TestCounter {
 
     private  int test = 0;
     
@@ -35,6 +35,11 @@ public class DirectGenericServletChild extends GenericServlet implements TestCou
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
     }
 
+    @Override
+    public void init() throws ServletException {
+    	super.init();
+    }
+    
     @Override
     public void inc() {
         test++;

@@ -15,8 +15,6 @@
  */
 package com.github.jjYBdx4IL.aspectj.utils.jaxb;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -26,23 +24,14 @@ import javax.xml.bind.annotation.XmlAttribute;
  * @author jjYBdx4IL
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Weaver {
+public class Dump {
 
     @XmlAttribute
-    public String options = null;
-    public List<Include> include = new ArrayList<>();
-    public List<Dump> dump = new ArrayList<>();
-
-    public void appendOption(String option) {
-        if (option == null || option.isEmpty()) {
-            throw new IllegalArgumentException("empty or null option string");
-        }
-        if (null == options) {
-            options = "";
-        }
-        if (!options.isEmpty()) {
-            options += " ";
-        }
-        options += option;
+    public String within = null;
+    @XmlAttribute
+    public boolean beforeandafter = true;
+    
+    public Dump(String within) {
+        this.within = within;
     }
 }

@@ -16,7 +16,6 @@
 package com.github.jjYBdx4IL.aop.tx;
 
 import com.github.jjYBdx4IL.aspectj.utils.AspectJWeaveConfig;
-import java.lang.annotation.Annotation;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,7 +23,6 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +37,7 @@ import org.slf4j.LoggerFactory;
             "com.google.gwt.user.server.rpc..*Servlet",
             "javax.servlet..*Servlet",
             "org.eclipse.jetty.websocket.servlet..*Servlet",
-            "*..*"},
+            "*..TxAspect"},
         verbose = true,
         showWeaveInfo = true,
         weaveJavaxPackages = true,
@@ -51,74 +49,28 @@ public class TxAspect {
 
     private static final Logger LOG = LoggerFactory.getLogger(Aspect.class);
 
-    @Pointcut("execution(* javax.servlet.GenericServlet+.init(..))")
-    public void servletInit() {
-    }
-  
-    @Pointcut("execution(* javax.servlet.GenericServlet+.destroy(..))")
-    public void servletDestroy() {
-}
-
-    //@Pointcut("within(@com.github.jjYBdx4IL.aop.tx.Tx *)")
-    @Pointcut("@this(com.github.jjYBdx4IL.aop.tx.Tx)")
-    //@Pointcut("target(@com.github.jjYBdx4IL.aop.tx.Tx Object)")
-    //@Pointcut("@target(com.github.jjYBdx4IL.aop.tx.Tx)")
-    public void classAnnotatedWithTx() {
-    }
-
-    @Pointcut("get(@com.github.jjYBdx4IL.aop.tx.TxEM javax.persistence.EntityManager *..*)")
-    public void emFieldAccess() {
-    }
-
-    @Pointcut("classAnnotatedWithTx() && emFieldAccess()")
-    public void emFieldAccessInAnnotatedClass() {
-    }
-
-    @Pointcut("classAnnotatedWithTx() && servletInit()")
-    public void servletInitInAnnotatedClass() {
-    } 
-
-    @Pointcut("classAnnotatedWithTx() && servletDestroy()")
-    public void servletDestroyInAnnotatedClass() {
-    }
-
-    @Around("emFieldAccessInAnnotatedClass() && this(foo)")
+    @Around("get(@TxEM javax.persistence.EntityManager ((@Tx *)+).*) && within(@Tx *) && this(foo)")
     public Object injectEntityManager(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         thisJoinPoint.proceed();
         LOG.info("injecting entity manager");
         return TxManager.getSingleton().getEntityManager(foo);
     }
 
-//    @After("servletInit()")
-//    public void afterServletInit1() {
-//        LOG.info("after servlet init1");
-//    }
-//    
-    //@Before("servletInitInAnnotatedClass() && this(foo)")
+    // execution(public * ((@Transactional *)+).*(..)) && within(@Transactional *)
     
-    //@Before("@this(com.github.jjYBdx4IL.aop.tx.Tx) && execution(* javax.servlet.GenericServlet+.init()) && this(foo)")
-    //@Before("@this(com.github.jjYBdx4IL.aop.tx.Tx) && execution(* javax.servlet.GenericServlet.init(..)) && this(foo)")
-    //@Before("@target(com.github.jjYBdx4IL.aop.tx.Tx) && execution(* javax.servlet.GenericServlet+.init()) && this(foo)")
-    
-    //@Before("execution(* javax.servlet.GenericServlet+.init()) && this(foo)")
-    //@Before("target(@com.github.jjYBdx4IL.aop.tx.Tx Object) && execution(* javax.servlet.GenericServlet+.init()) && this(foo)")
-    public void afterServletInit(Object foo) {
-        LOG.info(">>>>>>>>>>>>>>>> BEFORE SERVLET INIT " + foo);
-        for (Annotation a : foo.getClass().getAnnotations()) {
-            LOG.info("anno: " + a);
-        }
-        TxManager.getSingleton().getEntityManagerFactory(foo);
+    @Before("@this(Tx) && execution(* javax.servlet.GenericServlet.init()) && this(foo)")
+    public void beforeServletInit(Object foo) {
+    	LOG.info("beforeServletInit " + foo);
+      	TxManager.getSingleton().getEntityManagerFactory(foo);
     }
 
-    //@Before("servletDestroyInAnnotatedClass() && this(foo)")
-    //@Before("@this(com.github.jjYBdx4IL.aop.tx.Tx) && execution(* javax.servlet.GenericServlet+.destroy()) && this(foo)")
-    @Before("execution(* javax.servlet.GenericServlet+.destroy()) && this(foo)")
-    public void beforeServletDestroy(Object foo) {
-        LOG.info("before servlet destroy");
+    @After("@this(Tx) && execution(* javax.servlet.GenericServlet.destroy()) && this(foo)")
+    public void afterServletDestroy(Object foo) {
+        LOG.info("afterServletDestroy " + foo);
         TxManager.getSingleton().releaseEntityManagerFactory(foo);
     }
 
-    @Around("execution(@com.github.jjYBdx4IL.aop.tx.Tx * *..*(..)) && classAnnotatedWithTx() && this(foo)")
+    @Around("execution(@Tx * *..*(..)) && within(@Tx *) && this(foo)")
     public Object handleTx(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         LOG.info("handle tx");
         // start tx
@@ -138,7 +90,7 @@ public class TxAspect {
         }
     }
   
-    @Around("execution(@com.github.jjYBdx4IL.aop.tx.TxRO * *..*(..)) && classAnnotatedWithTx() && this(foo)")
+    @Around("execution(@TxRO * *..*(..)) && within(@Tx *) && this(foo)")
     public Object handleTxRO(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         LOG.info("handle tx read-only");
         // start tx

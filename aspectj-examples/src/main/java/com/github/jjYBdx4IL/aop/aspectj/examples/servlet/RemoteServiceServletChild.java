@@ -21,6 +21,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  *
  * @author jjYBdx4IL
  */
+@SuppressWarnings("serial")
 @ServletAnno
 public class RemoteServiceServletChild extends RemoteServiceServlet implements TestCounter {
 

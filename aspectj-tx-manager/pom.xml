@@ -67,7 +67,7 @@
                     <execution>
                         <goals>
                             <goal>generate-ltw-config</goal>
-                            <goal>generate-maven-startup-config</goal>
+<!--                             <goal>generate-maven-startup-config</goal> -->
                         </goals>
                     </execution>
                 </executions>

@@ -15,34 +15,21 @@
  */
 package com.github.jjYBdx4IL.aop.aspectj.examples.servlet;
 
-import java.io.IOException;
-import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
  * @author jjYBdx4IL
  */
-@SuppressWarnings("serial")
-@ServletAnno
-public class DirectGenericServletChild extends GenericServlet implements TestCounter {
+public class DirectGenericServletChildWithInitOverrideTest {
 
-    private  int test = 0;
-    
-    @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-    }
-
-    @Override
-    public void inc() {
-        test++;
-    }
-
-    @Override
-    public int get() {
-        return test;
-    }
-
+	@Test
+	public void test() throws ServletException {
+		DirectGenericServletChildWithInitOverride servlet = new DirectGenericServletChildWithInitOverride();
+		assertEquals(0, servlet.get());
+		servlet.init(null);
+		assertEquals(2, servlet.get());
+	}
 }

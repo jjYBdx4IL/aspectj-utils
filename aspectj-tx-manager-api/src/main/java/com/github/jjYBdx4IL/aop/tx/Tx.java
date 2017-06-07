@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * 
  * @author jjYBdx4IL
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Tx {
 
