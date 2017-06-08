@@ -34,10 +34,8 @@ import org.slf4j.LoggerFactory;
 @Aspect
 @AspectJWeaveConfig(
         includesWithin = {
-            "com.google.gwt.user.server.rpc..*Servlet",
             "javax.servlet..*Servlet",
-            "org.eclipse.jetty.websocket.servlet..*Servlet",
-            "*..TxAspect"},
+            "com.github.jjYBdx4IL.aop.tx.TxAspect"},
         verbose = true,
         showWeaveInfo = true,
         weaveJavaxPackages = true,
