@@ -65,7 +65,10 @@ public class GenerateMavenStartupConfigMojo
             if (!(artifact.getClassifier() == null || artifact.getClassifier().isEmpty())) {
                 continue;
             }
-            if (!(Artifact.SCOPE_RUNTIME.equals(artifact.getScope()) || Artifact.SCOPE_COMPILE.equals(artifact.getScope()))) {
+            if (!Artifact.SCOPE_RUNTIME.equals(artifact.getScope())
+            		&& !Artifact.SCOPE_COMPILE.equals(artifact.getScope())
+            		&& !Artifact.SCOPE_PROVIDED.equals(artifact.getScope())
+            		) {
                 continue;
             }
             aspectjWeaverLocation = new File(localRepository.getBasedir(), localRepository.pathOf(artifact)).getAbsolutePath();
