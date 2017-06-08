@@ -101,11 +101,14 @@ public class GenerateMavenStartupConfigMojo
             
             Artifact artifact = artifactResolver.resolveArtifact(buildingRequest, coordinate).getArtifact();
             
-            String aspectjWeaverLocation = new File(localRepository.getBasedir(), localRepository.pathOf(artifact)).getAbsolutePath();
-            
+            //String aspectjWeaverLocation = new File(localRepository.getBasedir(), localRepository.pathOf(artifact)).getAbsolutePath();
+            String aspectjWeaverLocation = artifact.getFile().getAbsolutePath();
+                    
             if (aspectjWeaverLocation == null) {
                 throw new MojoExecutionException("failed to retrieve artifact " + artifact);
             }
+            
+            project.getProperties().setProperty("aspectjWeaverLocation", aspectjWeaverLocation);
             
             String contents = null;
             
