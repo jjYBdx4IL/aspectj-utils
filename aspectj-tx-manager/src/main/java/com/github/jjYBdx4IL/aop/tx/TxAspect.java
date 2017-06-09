@@ -29,6 +29,9 @@ import org.slf4j.LoggerFactory;
 /**
  * from: https://eclipse.org/aspectj/doc/next/adk15notebook/ataspectj-pcadvice.html
  *
+ * Servlets that override GenericServlet.init() or destroy(), must call super.init()/super.destroy()
+ * from within those overrides. Only GenericServlet's init() and destroy() methods get weaved.
+ * 
  * @author jjYBdx4IL
  */
 @Aspect
@@ -51,28 +54,28 @@ public class TxAspect {
     public Object injectEntityManager(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         thisJoinPoint.proceed();
         LOG.info("injecting entity manager");
-        return TxManager.getSingleton().getEntityManager(foo);
+        return TxManager.getSingleton().getExistingEntityManager(foo);
     }
 
     // execution(public * ((@Transactional *)+).*(..)) && within(@Transactional *)
     
-    @Before("@this(Tx) && execution(* javax.servlet.GenericServlet.init()) && this(foo)")
+    @Before("@this(Tx) && execution(* init()) && within(javax.servlet.GenericServlet) && this(foo)")
     public void beforeServletInit(Object foo) {
     	LOG.info("beforeServletInit " + foo);
       	TxManager.getSingleton().getEntityManagerFactory(foo);
     }
 
-    @After("@this(Tx) && execution(* javax.servlet.GenericServlet.destroy()) && this(foo)")
+    @After("@this(Tx) && execution(* destroy()) && within(javax.servlet.GenericServlet) && this(foo)")
     public void afterServletDestroy(Object foo) {
         LOG.info("afterServletDestroy " + foo);
         TxManager.getSingleton().releaseEntityManagerFactory(foo);
     }
 
-    @Around("execution(@Tx * *..*(..)) && within(@Tx *) && this(foo)")
+    @Around("execution(@Tx * *(..)) && within(@Tx *) && this(foo)")
     public Object handleTx(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         LOG.info("handle tx");
         // start tx
-        EntityManager em = TxManager.getSingleton().getEntityManager(foo);
+        EntityManager em = TxManager.getSingleton().getNewEntityManager(foo);
         EntityTransaction transaction = em.getTransaction();
         if (!transaction.isActive()) {
             transaction.begin();
@@ -88,11 +91,11 @@ public class TxAspect {
         }
     }
   
-    @Around("execution(@TxRO * *..*(..)) && within(@Tx *) && this(foo)")
+    @Around("execution(@TxRO * *(..)) && within(@Tx *) && this(foo)")
     public Object handleTxRO(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         LOG.info("handle tx read-only");
         // start tx
-        EntityManager em = TxManager.getSingleton().getEntityManager(foo);
+        EntityManager em = TxManager.getSingleton().getNewEntityManager(foo);
         EntityTransaction transaction = em.getTransaction();
         transaction.setRollbackOnly();
         if (!transaction.isActive()) {

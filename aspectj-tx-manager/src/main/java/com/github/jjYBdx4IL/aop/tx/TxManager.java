@@ -17,6 +17,7 @@ package com.github.jjYBdx4IL.aop.tx;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.naming.InitialContext;
@@ -24,6 +25,9 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.h2.Driver;
+import org.hibernate.boot.SchemaAutoTooling;
+import org.hibernate.cfg.AvailableSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,10 +65,10 @@ public class TxManager {
         jdbcUrl = (String) ic.lookup("java:comp/env/jdbc/url");
 
         LOG.info("new " + TxManager.class.getName() + ", db url: " + jdbcUrl);
-        props.put("hibernate.hbm2ddl.auto", "create");
-        props.put("hibernate.show_sql", "true");
-        props.put("javax.persistence.jdbc.driver", "org.h2.Driver");
-        props.put("javax.persistence.jdbc.url", jdbcUrl);
+        props.put(AvailableSettings.HBM2DDL_AUTO, SchemaAutoTooling.UPDATE.name().toLowerCase(Locale.ROOT));
+        props.put(AvailableSettings.SHOW_SQL, "true");
+        props.put(AvailableSettings.JPA_JDBC_DRIVER, Driver.class.getName());
+        props.put(AvailableSettings.JPA_JDBC_URL, jdbcUrl);
     }
 
     public synchronized EntityManagerFactory getEntityManagerFactory(Object usedBy) {
@@ -89,10 +93,16 @@ public class TxManager {
         }
     }
 
-    public EntityManager getEntityManager(Object usedBy) {
-        if (entityManagers.get() == null) {
-            entityManagers.set(getSingleton().getEntityManagerFactory(usedBy).createEntityManager());
+    public EntityManager getNewEntityManager(Object usedBy) {
+        if (entityManagers.get() != null && entityManagers.get().isOpen()) {
+            LOG.error("replacing unclosed entity manager for " + usedBy);
+            entityManagers.get().close();
         }
+        entityManagers.set(getSingleton().getEntityManagerFactory(usedBy).createEntityManager());
+        return entityManagers.get();
+    }
+    
+    public EntityManager getExistingEntityManager(Object usedBy) {
         return entityManagers.get();
     }
 }
