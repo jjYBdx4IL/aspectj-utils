@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 /**
  * from: https://eclipse.org/aspectj/doc/next/adk15notebook/ataspectj-pcadvice.html
  *
- * Servlets that override GenericServlet.init() or destroy(), must call super.init()/super.destroy()
- * from within those overrides. Only GenericServlet's init() and destroy() methods get weaved.
- * 
+ * Servlets that override GenericServlet.init() or destroy(), must call super.init()/super.destroy() from within those
+ * overrides. Only GenericServlet's init() and destroy() methods get weaved.
+ *
  * @author jjYBdx4IL
  */
 @Aspect
@@ -58,11 +58,10 @@ public class TxAspect {
     }
 
     // execution(public * ((@Transactional *)+).*(..)) && within(@Transactional *)
-    
     @Before("@this(Tx) && execution(* init()) && within(javax.servlet.GenericServlet) && this(foo)")
     public void beforeServletInit(Object foo) {
-    	LOG.info("beforeServletInit " + foo);
-      	TxManager.getSingleton().getEntityManagerFactory(foo);
+        LOG.info("beforeServletInit " + foo);
+        TxManager.getSingleton().getEntityManagerFactory(foo);
     }
 
     @After("@this(Tx) && execution(* destroy()) && within(javax.servlet.GenericServlet) && this(foo)")
@@ -74,39 +73,54 @@ public class TxAspect {
     @Around("execution(@Tx * *(..)) && within(@Tx *) && this(foo)")
     public Object handleTx(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         LOG.info("handle tx");
-        // start tx
-        EntityManager em = TxManager.getSingleton().getNewEntityManager(foo);
-        EntityTransaction transaction = em.getTransaction();
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
 
+        final TxManager txManager = TxManager.getSingleton();
+        
+        EntityManager em = txManager.getNewEntityManager(foo);
         try {
-            Object result = thisJoinPoint.proceed();
-            transaction.commit();
-            return result;
-        } catch (Throwable ex) {
-            transaction.rollback();
-            throw ex;
+            EntityTransaction transaction = em.getTransaction();
+            try {
+                if (!transaction.isActive()) {
+                    transaction.begin();
+                }
+
+                Object result = thisJoinPoint.proceed();
+                transaction.commit();
+                return result;
+            } finally {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+            }
+        } finally {
+            txManager.releaseEntityManager();
         }
     }
-  
+
     @Around("execution(@TxRO * *(..)) && within(@Tx *) && this(foo)")
     public Object handleTxRO(ProceedingJoinPoint thisJoinPoint, Object foo) throws Throwable {
         LOG.info("handle tx read-only");
-        // start tx
-        EntityManager em = TxManager.getSingleton().getNewEntityManager(foo);
-        EntityTransaction transaction = em.getTransaction();
-        transaction.setRollbackOnly();
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
-
+        
+        final TxManager txManager = TxManager.getSingleton();
+        
+        EntityManager em = txManager.getNewEntityManager(foo);
         try {
-            return thisJoinPoint.proceed();
+            EntityTransaction transaction = em.getTransaction();
+            try {
+                transaction.setRollbackOnly();
+                if (!transaction.isActive()) {
+                    transaction.begin();
+                }
+
+                return thisJoinPoint.proceed();
+            } finally {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+            }
         } finally {
-            transaction.rollback();
+            txManager.releaseEntityManager();
         }
     }
-  
+
 }
