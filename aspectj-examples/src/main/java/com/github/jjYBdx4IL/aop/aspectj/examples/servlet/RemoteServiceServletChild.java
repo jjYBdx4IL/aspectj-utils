@@ -18,7 +18,8 @@ package com.github.jjYBdx4IL.aop.aspectj.examples.servlet;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
- *
+ * An annotated servlet.
+ * 
  * @author jjYBdx4IL
  */
 @SuppressWarnings("serial")

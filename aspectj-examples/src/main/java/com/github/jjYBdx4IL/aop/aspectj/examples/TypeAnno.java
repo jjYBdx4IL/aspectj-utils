@@ -21,7 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * Some annotation for marking classes.
+ * 
  * @author jjybdx4il
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -22,7 +22,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- *
+ * An annotated servlet.
+ * 
  * @author jjYBdx4IL
  */
 @SuppressWarnings("serial")

@@ -20,12 +20,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Root DTO object for aop.xml generation via JAXB.
+ * 
  * @author jjYBdx4IL
  */
 @XmlRootElement(name = "aspectj")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AOPXMLConfig {
+public class AopXmlConfig {
     
     public Aspects aspects = new Aspects();
     public Weaver weaver = new Weaver();

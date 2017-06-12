@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Aspect definitions.
  *
  * @author jjYBdx4IL
  */
@@ -34,15 +35,16 @@ import org.slf4j.LoggerFactory;
         includesWithin = {"javax.servlet.GenericServlet"},
         weaveJavaxPackages = true,
         debug = true
-)
+    )
 public class AspectDefinitions {
 
     private static final Logger LOG = LoggerFactory.getLogger(AspectDefinitions.class);
-    
-    @After("@this(com.github.jjYBdx4IL.aop.aspectj.examples.servlet.ServletAnno) && execution(* javax.servlet.GenericServlet.init()) && this(foo)")
+
+    @After("@this(com.github.jjYBdx4IL.aop.aspectj.examples.servlet.ServletAnno) "
+            + "&& execution(* javax.servlet.GenericServlet.init()) && this(foo)")
     public void testSuperMethodCall(Object foo) {
         LOG.info(">>> POINTCUT: @this(ServletAnno) && exec(* GenericServlet.init()) " + foo);
-        ((TestCounter)foo).inc();
+        ((TestCounter) foo).inc();
     }
-    
+
 }

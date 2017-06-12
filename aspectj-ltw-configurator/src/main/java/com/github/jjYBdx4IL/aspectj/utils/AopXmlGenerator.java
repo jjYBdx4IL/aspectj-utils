@@ -15,13 +15,18 @@
  */
 package com.github.jjYBdx4IL.aspectj.utils;
 
-import com.github.jjYBdx4IL.aspectj.utils.jaxb.AOPXMLConfig;
+import com.github.jjYBdx4IL.aspectj.utils.jaxb.AopXmlConfig;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.AspectClass;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.Dump;
 import com.github.jjYBdx4IL.aspectj.utils.jaxb.Include;
 import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import io.github.lukehutch.fastclasspathscanner.MatchProcessorException;
 import io.github.lukehutch.fastclasspathscanner.matchprocessor.ClassAnnotationMatchProcessor;
+import org.apache.commons.io.FileUtils;
+import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +36,6 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import org.apache.commons.io.FileUtils;
-import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class generates load-time weaving configuration for AspectJ Weaver (enabled via -javaagent:aspectjweaver.jar jvm
@@ -53,39 +54,45 @@ import org.slf4j.LoggerFactory;
  * </aspectj>
  * }</pre>
  *
- * and is expected by AspectJ at the classpath location META-INF/aop.xml.
+ * <p>
+ * and is expected by AspectJ at the classpath location META-INF/aop.xml.</p>
  *
- * The generator uses two annotations to achieve its goal: {@link AspectJWeaveRoot} and {@link Aspect}.
+ * <p>
+ * The generator uses two annotations to achieve its goal: {@link AspectJWeaveRoot} and {@link Aspect}.</p>
  *
+ * <p>
  * The first one is a new annotation declared by this package and needs to be put on package info classes' package
  * declaration. It declares to the generator that the package should be used as a package root for weaving, ie. all
- * classes in its package and in sub-packages will be considered for weaving by AspectJ.
+ * classes in its package and in sub-packages will be considered for weaving by AspectJ.</p>
  *
- * Aspect configuration entries will be gathered by scanning for the {@link Aspect} annotation.
+ * <p>
+ * Aspect configuration entries will be gathered by scanning for the {@link Aspect} annotation.</p>
  *
+ * <p>
  * This whole classpath scanning business can be limited to local classes directories, ie. to apply your generated
- * configuration only to your current project or module.
+ * configuration only to your current project or module.</p>
  *
  * @author jjYBdx4IL
  */
-public class AOPXMLGenerator {
+public class AopXmlGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AOPXMLGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AopXmlGenerator.class);
 
     /**
      * aop.xml configuration generator for AspectJ load-time weaving (LTW).
      *
-     * @param args first argument is output file path for aop.xml. Futher arguments are optional and may list allowed
-     * classes directories. If none is given, no restriction is being made. If using inside a maven project, you
-     * probably want to do something like
+     * <p>
+     * The first argument is output file path for aop.xml. Futher arguments are optional and may list allowed classes
+     * directories. If none is given, no restriction is being made. If using inside a maven project, you probably want
+     * to do something like {@code ..AopXmlGenerator ${project.build.directory}/classes/META-INF/aop.xml
+     * ${project.build.directory}/classes} using the exec-maven-plugin attached to the process-classes phase of your
+     * build.</p>
      *
-     * <pre>..AOPXMLGenerator ${project.build.directory}/classes/META-INF/aop.xml ${project.build.directory}/classes</pre>
-     *
-     * using the exec-maven-plugin attached to the process-classes phase of your build.
+     * @param args the arguments
      */
     public static void main(String[] args) {
         try {
-            AOPXMLGenerator generator = new AOPXMLGenerator();
+            AopXmlGenerator generator = new AopXmlGenerator();
             for (int i = 1; i < args.length; i++) {
                 generator.addAllowedClassesDir(args[i]);
             }
@@ -100,16 +107,17 @@ public class AOPXMLGenerator {
     protected boolean enableVerbose = false;
     protected ClassLoader classLoader = null;
     protected List<ClassLoader> overrideClassLoaders = null;
-    protected final AOPXMLConfig config = new AOPXMLConfig();
+    protected final AopXmlConfig config = new AopXmlConfig();
 
-    public AOPXMLGenerator() {
+    public AopXmlGenerator() {
     }
 
     /**
-     *
-     * @param classpathPrefix ie. ${project.build.directory}/classes if you only want to scan your current maven module
-     * for {@link AspectJWeaveRoot} and {@link Aspect} annotations. Not needed if you use {@link AspectJWeaveConfig}
+     * Use {@code ${project.build.directory}/classes} if you only want to scan your current maven module for
+     * {@link AspectJWeaveRoot} and {@link Aspect} annotations. Not needed if you use {@link AspectJWeaveConfig}
      * annotation because classpath entries containing it will be auto-selected for scanning.
+     *
+     * @param classpathPrefix ie. ${project.build.directory}/classes
      */
     public void addAllowedClassesDir(String classpathPrefix) {
         String moduleUriPrefix = new File(classpathPrefix).toURI().toString();
@@ -118,18 +126,19 @@ public class AOPXMLGenerator {
     }
 
     /**
+     * Use ${project.build.directory}/classes/META-INF/aop.xml to put the resulting AspectJ LTW configuration into your
+     * classes output directory and thereby into the resulting jar artifact.
      *
-     * @param outputFilename ie. ${project.build.directory}/classes/META-INF/aop.xml to put the resulting AspectJ LTW
-     * configuration into your classes output directory and thereby into the resulting jar artifact.
-     * @throws JAXBException
-     * @throws IOException
+     * @param outputFilename ie. ${project.build.directory}/classes/META-INF/aop.xml
+     * @throws JAXBException if there is a serialization problem
+     * @throws IOException if there is an IO problem writing the file to disk
      */
     public void saveTo(String outputFilename) throws JAXBException, IOException {
         if (outputFilename == null || outputFilename.isEmpty()) {
             throw new IllegalArgumentException("no output filename");
         }
         File outputFile = new File(outputFilename);
-        String xml = createXML();
+        String xml = createXml();
         if (LOG.isTraceEnabled()) {
             LOG.trace("writing to " + outputFile.getAbsolutePath() + ": " + xml);
         }
@@ -242,23 +251,29 @@ public class AOPXMLGenerator {
         config.aspects.aspect.add(new AspectClass(classRef.getName()));
     }
 
-    public String createXML() throws JAXBException {
+    /**
+     * Create the aop.xml XML string.
+     * 
+     * @return the xml.
+     * @throws JAXBException if there is an issue with serialization of the aop configuration.
+     */
+    public String createXml() throws JAXBException {
 
-        ClassAnnotationMatchProcessor weaveRootProcessor = new ClassAnnotationMatchProcessor() {
+        final ClassAnnotationMatchProcessor weaveRootProcessor = new ClassAnnotationMatchProcessor() {
             @Override
             public void processMatch(Class<?> classRef) {
                 processAspectJWeaveRootAnnotatedClass(classRef);
             }
         };
 
-        ClassAnnotationMatchProcessor weaveConfigProcessor = new ClassAnnotationMatchProcessor() {
+        final ClassAnnotationMatchProcessor weaveConfigProcessor = new ClassAnnotationMatchProcessor() {
             @Override
             public void processMatch(Class<?> classRef) {
                 processAspectJWeaveConfigAnnotatedClass(classRef);
             }
         };
 
-        ClassAnnotationMatchProcessor aspectProcessor = new ClassAnnotationMatchProcessor() {
+        final ClassAnnotationMatchProcessor aspectProcessor = new ClassAnnotationMatchProcessor() {
             @Override
             public void processMatch(Class<?> classRef) {
                 processAspectAnnotatedClass(classRef);
@@ -286,7 +301,7 @@ public class AOPXMLGenerator {
         }
 
         // serialize config to XML
-        JAXBContext jaxbContext = JAXBContext.newInstance(AOPXMLConfig.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(AopXmlConfig.class);
         Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 

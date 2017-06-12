@@ -15,34 +15,35 @@
  */
 package com.github.jjYBdx4IL.aspectj.utils.mavenplugin;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import java.io.PrintWriter;
-import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.DefaultProjectBuildingRequest;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.shared.artifact.DefaultArtifactCoordinate;
 import org.apache.maven.shared.artifact.resolve.ArtifactResolver;
 import org.apache.maven.shared.artifact.resolve.ArtifactResolverException;
 import org.codehaus.plexus.util.FileUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
 @Mojo(
         name = "generate-maven-startup-config",
         defaultPhase = LifecyclePhase.INITIALIZE
-)
+    )
 public class GenerateMavenStartupConfigMojo
         extends AbstractMojo {
 
@@ -64,7 +65,7 @@ public class GenerateMavenStartupConfigMojo
     private List<ArtifactRepository> remoteRepositories;
 
     /**
-     * The Maven session
+     * The Maven session.
      */
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
     protected MavenSession session;
@@ -74,6 +75,11 @@ public class GenerateMavenStartupConfigMojo
     @Component
     private ArtifactResolver artifactResolver;
 
+    /**
+     * Execute() for goal "generate-maven-startup-config".
+     * 
+     * @throws MojoExecutionException on failure
+     */
     public void execute() throws MojoExecutionException {
         try {
             final File cfg = new File(project.getBasedir(), MVN_JVM_CONFIG);
@@ -101,7 +107,6 @@ public class GenerateMavenStartupConfigMojo
             
             Artifact artifact = artifactResolver.resolveArtifact(buildingRequest, coordinate).getArtifact();
             
-            //String aspectjWeaverLocation = new File(localRepository.getBasedir(), localRepository.pathOf(artifact)).getAbsolutePath();
             String aspectjWeaverLocation = artifact.getFile().getAbsolutePath();
                     
             if (aspectjWeaverLocation == null) {

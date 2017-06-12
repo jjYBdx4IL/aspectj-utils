@@ -16,7 +16,8 @@
 package com.github.jjYBdx4IL.aop.aspectj.examples;
 
 /**
- *
+ * A parent's child class.
+ * 
  * @author jjYBdx4IL
  */
 @TypeAnno

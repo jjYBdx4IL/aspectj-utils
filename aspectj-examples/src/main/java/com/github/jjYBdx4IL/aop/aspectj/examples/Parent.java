@@ -16,7 +16,8 @@
 package com.github.jjYBdx4IL.aop.aspectj.examples;
 
 /**
- *
+ * The parent class.
+ * 
  * @author jjYBdx4IL
  */
 public class Parent extends ParentsParent {

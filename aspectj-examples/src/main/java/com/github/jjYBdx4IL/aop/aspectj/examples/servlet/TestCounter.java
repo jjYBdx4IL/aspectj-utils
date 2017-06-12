@@ -16,11 +16,13 @@
 package com.github.jjYBdx4IL.aop.aspectj.examples.servlet;
 
 /**
- *
+ * Test counter interface for testing weaving.
+ * 
  * @author jjYBdx4IL
  */
 interface TestCounter {
 
     public void inc();
+    
     public int get();
 }

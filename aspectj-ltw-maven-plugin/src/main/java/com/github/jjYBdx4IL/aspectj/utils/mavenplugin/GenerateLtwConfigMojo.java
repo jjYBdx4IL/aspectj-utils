@@ -15,14 +15,7 @@
  */
 package com.github.jjYBdx4IL.aspectj.utils.mavenplugin;
 
-import com.github.jjYBdx4IL.aspectj.utils.AOPXMLGenerator;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.List;
-import javax.xml.bind.JAXBException;
+import com.github.jjYBdx4IL.aspectj.utils.AopXmlGenerator;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -32,12 +25,20 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.List;
+import javax.xml.bind.JAXBException;
+
 @Mojo(
         name = "generate-ltw-config",
         defaultPhase = LifecyclePhase.PROCESS_CLASSES,
         requiresDependencyResolution = ResolutionScope.COMPILE
-)
-public class GenerateLTWConfigMojo
+    )
+public class GenerateLtwConfigMojo
         extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
@@ -46,8 +47,13 @@ public class GenerateLTWConfigMojo
     @Parameter(defaultValue = "${project.build.outputDirectory}", required = true, readonly = true)
     private File outputDirectory;
 
+    /**
+     * Execute() for goal "generate-ltw-config".
+     * 
+     * @throws MojoExecutionException on failure
+     */
     public void execute() throws MojoExecutionException {
-        AOPXMLGenerator generator = new AOPXMLGenerator();
+        AopXmlGenerator generator = new AopXmlGenerator();
         generator.setEnableVerbose(getLog().isDebugEnabled());
         try {
             ClassLoader cl = createClassLoader(project.getCompileClasspathElements());

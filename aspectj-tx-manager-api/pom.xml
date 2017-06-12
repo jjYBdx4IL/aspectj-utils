@@ -13,8 +13,11 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
     

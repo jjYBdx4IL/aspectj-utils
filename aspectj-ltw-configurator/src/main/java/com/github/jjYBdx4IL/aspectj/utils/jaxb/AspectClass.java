@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
+ * DTO object for aop.xml generation via JAXB.
  *
  * @author jjYBdx4IL
  */

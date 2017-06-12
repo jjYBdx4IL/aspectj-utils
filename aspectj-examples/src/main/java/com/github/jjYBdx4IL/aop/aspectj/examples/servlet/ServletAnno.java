@@ -21,7 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- *
+ * An annotation for annotating servlets.
+ * 
  * @author jjybdx4il
  */
 @Retention(RetentionPolicy.RUNTIME)

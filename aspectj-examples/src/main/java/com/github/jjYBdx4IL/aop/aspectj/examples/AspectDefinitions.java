@@ -20,7 +20,8 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
- *
+ * Aspect definitions.
+ * 
  * @author jjYBdx4IL
  */
 @Aspect
@@ -31,7 +32,7 @@ import org.aspectj.lang.annotation.Aspect;
         // own class definition!
         includesWithin = {"com.github.jjYBdx4IL.aop.aspectj.examples..*"},
         debug = true
-)
+    )
 public class AspectDefinitions {
 
     @After("execution(* ParentsParent+.parentMethod(..)) && this(foo)")

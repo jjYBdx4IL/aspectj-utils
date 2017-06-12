@@ -99,7 +99,6 @@
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
-                            <goal>test-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -160,6 +159,23 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.1</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>2.17</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <logViolationsToConsole>true</logViolationsToConsole>
+                        <failOnViolation>true</failOnViolation>
+                        <configLocation>${project.basedir}/../checkstyle.xml</configLocation>
+                        <excludes>**/HelpMojo.java</excludes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -223,6 +239,10 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>                
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>2.9</version>
@@ -337,6 +357,14 @@
         </pluginManagement>
     </build>
     
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+    
     <dependencyManagement>
         <dependencies>
             <!-- sorted by artifactId -->
@@ -422,4 +450,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    
 </project>

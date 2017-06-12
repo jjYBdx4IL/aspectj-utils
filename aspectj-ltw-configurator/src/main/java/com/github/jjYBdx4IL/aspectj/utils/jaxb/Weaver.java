@@ -22,7 +22,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- *
+ * DTO object for aop.xml generation via JAXB.
+ * 
  * @author jjYBdx4IL
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -33,6 +34,11 @@ public class Weaver {
     public List<Include> include = new ArrayList<>();
     public List<Dump> dump = new ArrayList<>();
 
+    /**
+     * Append a weaver config option.
+     * 
+     * @param option the weaver option, ie "-debug".
+     */
     public void appendOption(String option) {
         if (option == null || option.isEmpty()) {
             throw new IllegalArgumentException("empty or null option string");

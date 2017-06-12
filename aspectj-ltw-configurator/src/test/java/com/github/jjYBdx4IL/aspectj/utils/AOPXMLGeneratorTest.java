@@ -32,14 +32,14 @@ public class AOPXMLGeneratorTest {
     private static final Logger LOG = LoggerFactory.getLogger(AOPXMLGeneratorTest.class);
     
     /**
-     * Test of createXML method, of class AOPXMLGenerator.
+     * Test of createXml method, of class AopXmlGenerator.
      */
     @Test
     public void test() throws Exception {
-        AOPXMLGenerator generator = new AOPXMLGenerator();
+        AopXmlGenerator generator = new AopXmlGenerator();
 //        generator.addAllowedClassesDir(new File(System.getProperty("basedir"), "target/test-classes").getAbsolutePath());
 //        generator.setEnableVerbose(LOG.isDebugEnabled());
-        String xml = generator.createXML();
+        String xml = generator.createXml();
 
         String expectedXml = String.format(Locale.ROOT, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                 + "<aspectj>\n"

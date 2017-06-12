@@ -49,6 +49,10 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            
+            <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>aspectj-ltw-maven-plugin</artifactId>
                 <version>${project.version}</version>

@@ -21,7 +21,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- *
+ * DTO object for aop.xml generation via JAXB.
+ * 
  * @author jjYBdx4IL
  */
 @XmlAccessorType(XmlAccessType.FIELD)

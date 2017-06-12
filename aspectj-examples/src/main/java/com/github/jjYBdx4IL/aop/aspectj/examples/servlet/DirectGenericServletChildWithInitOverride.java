@@ -22,7 +22,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
- *
+ * An annotated servlet.
+ * 
  * @author jjYBdx4IL
  */
 @SuppressWarnings("serial")
@@ -37,7 +38,7 @@ public class DirectGenericServletChildWithInitOverride extends GenericServlet im
 
     @Override
     public void init() throws ServletException {
-    	super.init();
+        super.init();
     }
     
     @Override

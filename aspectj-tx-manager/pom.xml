@@ -42,10 +42,26 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>9.4.5.v20170502</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>9.4.5.v20170502</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            
             <plugin>
                 <groupId>com.github.jjYBdx4IL.aop</groupId>
                 <artifactId>aspectj-ltw-maven-plugin</artifactId>
