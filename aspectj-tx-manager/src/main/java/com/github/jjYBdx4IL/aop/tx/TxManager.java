@@ -15,11 +15,16 @@
  */
 package com.github.jjYBdx4IL.aop.tx;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -28,7 +33,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import org.h2.Driver;
-import org.h2.tools.Console;
+import org.h2.engine.Constants;
+import org.h2.tools.Server;
 import org.hibernate.boot.SchemaAutoTooling;
 import org.hibernate.cfg.AvailableSettings;
 import org.slf4j.Logger;
@@ -45,6 +51,8 @@ public class TxManager {
     protected static TxManager txManagerSingleton = null;
     private final String jdbcUrl;
     protected static final String PU_NAME = "default";
+    private Server h2FrontendServer = null;
+    public static final int H2_FRONTEND_PORT = 8083;
 
     public static synchronized TxManager getSingleton() {
         if (txManagerSingleton == null) {
@@ -79,13 +87,12 @@ public class TxManager {
         if (entityManagerFactory == null) {
             LOG.info("creating EntityManagerFactory singleton for persistence unit " + PU_NAME);
             entityManagerFactory = Persistence.createEntityManagerFactory(PU_NAME, props);
-            
-//            try {
-//                // start h2 managment web frontend
-//                new Console().runTool(new String[]{});
-//            } catch (SQLException ex) {
-//                LOG.error("failed to start database management frontend", ex);
-//            }
+
+            try {
+                startH2Frontend();
+            } catch (IOException | SQLException ex) {
+                LOG.error("failed to start h2 frontend", ex);
+            }
         }
         emfUsedByRefs.add(usedBy);
         LOG.info("EntityManagerFactory for persistence unit " + PU_NAME + " now in use by " + emfUsedByRefs.size() + " objects");
@@ -100,6 +107,9 @@ public class TxManager {
             LOG.info("closing EntityManagerFactory singleton for persistence unit " + PU_NAME + " because it is not in use any more");
             entityManagerFactory.close();
             entityManagerFactory = null;
+
+            stopH2Frontend();
+            LOG.info("stopped h2 frontend");
         }
     }
 
@@ -136,6 +146,47 @@ public class TxManager {
             }
         } finally {
             entityManagers.set(null);
+        }
+    }
+
+    private synchronized void startH2Frontend() throws IOException, SQLException {
+        // inject connection settings into frontend config
+        Properties webServerProps = new Properties();
+        webServerProps.put("0", String.format(Locale.ROOT, "Generic H2 (Embedded)|%s|%s",
+                Driver.class.getName(),
+                props.get(AvailableSettings.JPA_JDBC_URL).replace("\\", "\\\\").replace(":", "\\:")));
+
+        String dbLoc = props.get(AvailableSettings.JPA_JDBC_URL).replaceFirst("^[^:]*:[^:]*:", "");
+        if (dbLoc.contains(";")) {
+            dbLoc = dbLoc.substring(0, dbLoc.indexOf(";"));
+        }
+        if (dbLoc.contains("?")) {
+            dbLoc = dbLoc.substring(0, dbLoc.indexOf("?"));
+        }
+        File dbDir = new File(dbLoc).getParentFile();
+        // put h2 frontend config in same directory as the database:
+        File h2FrontendConfigFile = new File(dbDir, Constants.SERVER_PROPERTIES_NAME);
+
+        try (OutputStream os = new FileOutputStream(h2FrontendConfigFile)) {
+            webServerProps.store(os, "");
+        }
+
+        // use -Dh2.bindAddress=localhost to force binding to your localhost interface!
+        
+        h2FrontendServer = new Server();
+        h2FrontendServer.runTool(
+                "-web",
+                "-webPort", Integer.toString(H2_FRONTEND_PORT),
+                "-ifExists",
+                "-baseDir", dbDir.getAbsolutePath(),
+                "-properties", dbDir.getAbsolutePath());
+
+        LOG.info("H2 frontend available on localhost:" + H2_FRONTEND_PORT);
+    }
+
+    private void stopH2Frontend() {
+        if (h2FrontendServer != null) {
+            h2FrontendServer.stop();
         }
     }
 }
