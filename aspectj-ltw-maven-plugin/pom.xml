@@ -130,6 +130,7 @@
             </plugins>
         </pluginManagement>
     </build>
+    
     <profiles>
         <profile>
             <id>run-its</id>

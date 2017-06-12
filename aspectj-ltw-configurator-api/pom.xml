@@ -11,5 +11,13 @@
     <artifactId>aspectj-ltw-configurator-api</artifactId>
     <packaging>jar</packaging>
     <name>AspectJ Utils :: LTW Configurator API</name>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
