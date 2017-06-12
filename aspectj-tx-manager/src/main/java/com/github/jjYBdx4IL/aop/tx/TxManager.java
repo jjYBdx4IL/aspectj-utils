@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2017 jjYBdx4IL (https://github.com/jjYBdx4IL)
+ * Copyright © 2017 jjYBdx4IL (https://github.com/jjYBdx4IL)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +15,7 @@
  */
 package com.github.jjYBdx4IL.aop.tx;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -26,8 +27,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.transaction.Transaction;
 import org.h2.Driver;
+import org.h2.tools.Console;
 import org.hibernate.boot.SchemaAutoTooling;
 import org.hibernate.cfg.AvailableSettings;
 import org.slf4j.Logger;
@@ -78,6 +79,13 @@ public class TxManager {
         if (entityManagerFactory == null) {
             LOG.info("creating EntityManagerFactory singleton for persistence unit " + PU_NAME);
             entityManagerFactory = Persistence.createEntityManagerFactory(PU_NAME, props);
+            
+//            try {
+//                // start h2 managment web frontend
+//                new Console().runTool(new String[]{});
+//            } catch (SQLException ex) {
+//                LOG.error("failed to start database management frontend", ex);
+//            }
         }
         emfUsedByRefs.add(usedBy);
         LOG.info("EntityManagerFactory for persistence unit " + PU_NAME + " now in use by " + emfUsedByRefs.size() + " objects");
