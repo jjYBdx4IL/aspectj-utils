@@ -1,6 +1,11 @@
 # aspectj-utils
 
-Contains a META-INF/aop.xml generator (AopXmlGenerator) for AspectJ load-time weaving (LTW).
+Contains:
+
+* a META-INF/aop.xml generator (AopXmlGenerator) for AspectJ load-time weaving (LTW).
+* an annotation-based transaction manager, similar to Spring but without pulling an entire framework into your
+services. [Here is an example](https://github.com/jjYBdx4IL/example-maven-project-setups/tree/9bd2dd2e9dda97e2665404e608b56a8607cf307d/gwt-example)
+using both.
 
 The generator is controlled through annotations indicating the root
 of the classes to be weaved, and aspects will be added by scanning
