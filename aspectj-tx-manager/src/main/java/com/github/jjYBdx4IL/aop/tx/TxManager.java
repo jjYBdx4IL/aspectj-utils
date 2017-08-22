@@ -147,7 +147,7 @@ public class TxManager {
     }
 
     /**
-     * Release the entity manager assocatied with the curreent thread.
+     * Release the entity manager assocatied with the current thread.
      */
     public void releaseEntityManager() {
         EntityManager em = entityManagers.get();
