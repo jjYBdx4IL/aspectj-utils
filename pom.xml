@@ -4,7 +4,7 @@
 
     <groupId>com.github.jjYBdx4IL.aop</groupId>
     <artifactId>aspectj-utils</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>AspectJ Utils</name>
     <description>AspectJ Utils</description>
@@ -53,7 +53,7 @@
         <connection>scm:git:git://github.com/jjYBdx4IL/aspectj-utils.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jjYBdx4IL/aspectj-utils.git</developerConnection>
         <url>https://github.com/jjYBdx4IL/aspectj-utils</url>
-      <tag>aspectj-utils-1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <modules>
