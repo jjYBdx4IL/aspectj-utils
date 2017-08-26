@@ -65,6 +65,19 @@
         <module>aspectj-tx-manager-api</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>oss.sonatype.org</id>
+            <name>oss staging</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>oss.sonatype.org</id>
+            <name>oss snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
     <build>
         <plugins>
             <plugin>
@@ -258,11 +271,9 @@
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
                     <goals>
-                    	<goal>deploy</goal>
-                    	<goal>nexus-staging:release</goal>
+                        <goal>deploy</goal>
+                        <goal>nexus-staging:release</goal>
                     </goals>
-                    <configuration>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
@@ -292,7 +303,7 @@
                     </configuration>
                 </plugin>
 
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -366,6 +377,47 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>full</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+        </profile>
+        <profile>
+            <id>sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <keyname>jjYBdx4IL@github.com</keyname>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 
     <reporting>
         <plugins>

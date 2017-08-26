@@ -9,7 +9,6 @@
     </parent>
     
     <artifactId>aspectj-ltw-configurator-api</artifactId>
-    <packaging>jar</packaging>
     <name>AspectJ Utils :: LTW Configurator API</name>
     
     <build>
