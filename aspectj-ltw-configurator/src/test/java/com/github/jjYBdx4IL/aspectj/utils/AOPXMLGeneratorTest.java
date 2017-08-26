@@ -15,6 +15,8 @@
  */
 package com.github.jjYBdx4IL.aspectj.utils;
 
+import static org.junit.Assert.*;
+
 import com.github.jjYBdx4IL.aspectj.utils.testaspects.Aspect1;
 import com.github.jjYBdx4IL.aspectj.utils.testroot.SomePotentiallyWeavedClass;
 import org.junit.Test;
@@ -55,7 +57,7 @@ public class AOPXMLGeneratorTest {
                 + "\n"
                 + "</aspectj>\n", Aspect1.class.getName(), SomePotentiallyWeavedClass.class.getPackage().getName());
         LOG.debug(xml);
-        XMLUtils.assertEquals(expectedXml, xml);
+        assertTrue(XMLUtils.compareStrippedXml(expectedXml, xml));
     }
 
 }
