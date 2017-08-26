@@ -8,7 +8,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>AspectJ Utils</name>
-    <description />
+    <description>AspectJ Utils</description>
     <url>https://github.com/jjYBdx4IL/aspectj-utils</url>
     <inceptionYear>2017</inceptionYear>
 
