@@ -1,5 +1,7 @@
 # aspectj-utils
 
+[![Build Status](https://travis-ci.org/jjYBdx4IL/aspectj-utils.png?branch=master)](https://travis-ci.org/jjYBdx4IL/aspectj-utils)
+
 Contains:
 
 * a META-INF/aop.xml generator (AopXmlGenerator) for AspectJ load-time weaving (LTW).
