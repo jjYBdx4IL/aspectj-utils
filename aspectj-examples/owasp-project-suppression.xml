@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
+   <suppress>
+      <notes><![CDATA[
+      file name: gwt-servlet-2.8.2.jar
+      ]]></notes>
+      <gav regex="true">^com\.google\.gwt:gwt-servlet:.*$</gav>
+      <cve>CVE-2015-5237</cve>
+   </suppress>
+</suppressions>
