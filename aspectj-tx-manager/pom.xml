@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>com.github.jjYBdx4IL.aop</groupId>
         <artifactId>aspectj-utils</artifactId>
         <version>1.1-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>aspectj-tx-manager</artifactId>
     <name>AspectJ Transaction Manager</name>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.github.jjYBdx4IL.aop</groupId>
@@ -32,6 +33,17 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.jjYBdx4IL.aop</groupId>
@@ -45,23 +57,23 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <version>9.4.9.v20180320</version>
+            <version>${jetty.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>9.4.9.v20180320</version>
+            <version>${jetty.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
-            
+
             <plugin>
                 <groupId>com.github.jjYBdx4IL.aop</groupId>
                 <artifactId>aspectj-ltw-maven-plugin</artifactId>
@@ -74,7 +86,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <configuration>
@@ -84,10 +96,10 @@
                         </requirePluginVersions>
                     </rules>
                 </configuration>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>release</id>
@@ -102,7 +114,7 @@
                                 </requirePluginVersions>
                             </rules>
                         </configuration>
-                    </plugin>            
+                    </plugin>
                 </plugins>
             </build>
         </profile>

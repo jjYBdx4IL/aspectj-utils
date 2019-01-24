@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.8.7</version>
+            <version>1.9.2</version>
         </dependency>
         
         <dependency>
@@ -61,7 +61,14 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <aspectjWeaverVersion>1.8.7</aspectjWeaverVersion>
+                    <aspectjWeaverVersion>1.9.2</aspectjWeaverVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
         </plugins>
