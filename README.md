@@ -27,3 +27,13 @@ loaders. Example: Jetty WebApp. Add tx manager to Jetty parent, declare tx api a
 in your webapp! Otherwise, due to Jetty's default handling of such cases, you will end up with
 two annotation classes and AspectJ might not be able to match them. This is particularly painful
 because AspectJ runtime tests don't seem to have any verbose option.
+
+## Warning
+
+There may be open CVEs as this project is largely unmaintained.
+
+
+
+--
+[![Build Status](https://travis-ci.org/jjYBdx4IL/aspectj-utils.png?branch=master)](https://travis-ci.org/jjYBdx4IL/aspectj-utils)
+devel/java/github/aspectj-utils@7840
