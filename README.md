@@ -36,4 +36,4 @@ There may be open CVEs as this project is largely unmaintained.
 
 --
 [![Build Status](https://travis-ci.org/jjYBdx4IL/aspectj-utils.png?branch=master)](https://travis-ci.org/jjYBdx4IL/aspectj-utils)
-devel/java/github/aspectj-utils@7840
+devel/java/github/aspectj-utils@7850
