@@ -1,6 +1,0 @@
-language: java
-env:
-  - PUBLIC_CI=true
-jdk:
-  - oraclejdk8
-  - openjdk11

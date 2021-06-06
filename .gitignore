@@ -1,3 +1,9 @@
+/.project
+/.settings/
+/.classpath
+/*/.project
+/*/.settings/
+/*/.classpath
 /nbproject/
 /target/
 /aspectj-ltw-configurator-maven-plugin/target/
